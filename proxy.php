@@ -20,15 +20,20 @@ $newPath = ltrim($path, '/');
 if ($query) {
     $newPath .= '?' . $query;
 }
-$base = 'https://news.ycombinator.com/';
-$proxyUrl = $base . $newPath;
+$base = 'https://news.ycombinator.com';
+$proxyUrl = $base ."/". $newPath;
 header('Content-Type: text/html; charset=utf-8');
-
 $contents = @file_get_contents($proxyUrl);
+if ($contents === false) {
+    header("HTTP/1.1 404 Not Found");
+    die("Unknown.");
+}
+
 // Do not replace text if its file
 if(strpos($path,".")){
     echo $contents;
 }else{
+    $contents = $replacer->replaceLinks($base, $contents);
     echo $replacer->replaceContent($contents);
 }
 

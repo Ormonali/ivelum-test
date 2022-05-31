@@ -1,14 +1,20 @@
 <?php
 class Replacer{
+    
+    function replaceLinks($base, $content){
+        return str_replace($base, "/", $content);
+    }
+
     function replaceContent($content)
     {
-        $word6Regex = "/(?!<|\/|\")(\b[A-Za-z]{6}\b)(?!>|\/|\"|:|\.|-|=|;)/";
+        $word6Regex = "/(?!<|\/|\")(\b[A-Za-z\p{Cyrillic}]{6}\b)(?!>|\/|-|=)/u";
+        $converted = mb_convert_encoding($content, 'HTML-ENTITIES', 'UTF-8');
         $doc = new DOMDocument();
         $doc->preserveWhiteSpace = false;
-        $doc->loadHTML($content, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD | LIBXML_NOERROR);
+        $doc->loadHTML($converted, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD | LIBXML_NOERROR);
         $replacement = '$0™';
         self::domTextReplace($word6Regex, $replacement, $doc, true);
-        return utf8_encode($doc->saveHTML());
+        return $doc->saveHTML();
     }
     // I copied here the function for everyone to find it quick
     function domTextReplace($search, $replace, DOMNode &$domNode, $isRegEx = false)
