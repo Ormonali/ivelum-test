@@ -7,7 +7,7 @@ class Replacer{
 
     function replaceContent($content)
     {
-        $word6Regex = "/(?!<|\/|\")(\b[A-Za-z\p{Cyrillic}]{6}\b)(?!>|\/|-|=)/u";
+        $word6Regex = "/(?!<|\/|\")(\b[A-Za-zäöüÄÖÜß\p{Cyrillic}]{6}\b)(?!>|\/|-|=|™)/u";
         $converted = mb_convert_encoding($content, 'HTML-ENTITIES', 'UTF-8');
         $doc = new DOMDocument();
         $doc->preserveWhiteSpace = false;
